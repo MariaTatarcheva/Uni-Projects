@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бизнес Калкулатор</title>
+    <style>
+        body {
+            background-image: url('https://static.vecteezy.com/system/resources/previews/004/750/614/non_2x/flat-design-abstract-background-soft-liquid-shapes-template-with-modern-gradient-background-colors-cool-aesthetic-background-design-suitable-for-social-media-post-mobile-app-banner-web-ads-free-vector.jpg'); 
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        #calculator {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            max-width: 400px;
+            width: 100%;
+            background-color: #e7e5e5;
+            transition: background-color 0.3s, opacity 0.5s; 
+            margin: 10% auto;
+        }
+
+        #calculator:hover {
+            background-color: #dadada;
+            opacity: 0.8; 
+        }
+
+        h2 {
+            text-align: center;
+            color: #000000;
+        }
+
+        #months {
+            margin-bottom: 20px;
+        }
+
+        .month-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            box-sizing: border-box;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .calculate-button {
+            background-color: #e76f9d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calculate-button:hover {
+            background-color: #b36d88;
+        }
+
+        .calculate-button:active {
+            background-color: #fb1e9b;
+            border: 2px solid #f4a810; 
+        }
+
+        #result-container {
+            display: none;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #result-container p {
+            margin: 0;
+        }
+
+        @media screen and (max-width: 600px) {
+            #calculator {
+                margin-top: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="calculator" onmouseout="fadeCalculator()"> <!-- Добавяне на събитие за излизане на мишката -->
+        <h2>Бизнес Калкулатор</h2>
+
+        <div id="months"></div>
+
+        <button onclick="addNewMonthFields()">Добави нов месец</button>
+
+        <button class="calculate-button" onclick="calculateTax()">Изчисли данъка</button>
+        <button class="calculate-button" onclick="calculateProfit()">Изчисли печалбата</button>
+        <div id="result-container">
+            <p id="result-info"></p>
+        </div>
+    </div>
+
+    <!-- Добавете следния HTML код под бутоните във вашия HTML документ -->
+
+
+
+    <script>
+        var monthCount = 1;
+
+        function addNewMonthFields() {
+            var calculator = document.getElementById('calculator');
+            var monthsContainer = document.getElementById('months');
+
+            var monthContainer = document.createElement('div');
+            monthContainer.className = 'month-container';
+            monthContainer.id = 'month' + monthCount;
+
+            var newIncomeInput = document.createElement('input');
+            var newExpensesInput = document.createElement('input');
+
+            newIncomeInput.type = 'number';
+            newIncomeInput.placeholder = 'Месец : ' + monthCount + ' - Приход';
+            newExpensesInput.type = 'number';
+            newExpensesInput.placeholder = 'Месец : ' + monthCount + ' - Разход';
+
+            monthContainer.appendChild(newIncomeInput);
+            monthContainer.appendChild(newExpensesInput);
+
+            monthsContainer.appendChild(monthContainer);
+
+            monthCount++;
+        }
+
+        function calculateTax() {
+            calculate('tax');
+        }
+
+        function calculateProfit() {
+            calculate('profit');
+        }
+
+        // Променете следния код във вашия JavaScript код
+
+function calculate(type) {
+    var monthsContainer = document.getElementById('months');
+    var resultContainer = document.getElementById('result-container');
+    var resultInfo = document.getElementById('result-info');
+
+    var totalTax = 0;
+    var totalProfit = 0;
+
+    for (var i = 1; i <= monthCount - 1; i++) {
+        var monthIncome = parseFloat(document.getElementById('month' + i).getElementsByTagName('input')[0].value);
+        var monthExpenses = parseFloat(document.getElementById('month' + i).getElementsByTagName('input')[1].value);
+
+        if (!isNaN(monthIncome) && !isNaN(monthExpenses)) {
+            var tax = 0.2 * (monthIncome - monthExpenses);
+            var profit = monthIncome - monthExpenses - tax;
+
+            totalTax += tax;
+            totalProfit += profit;
+
+            if (type === 'tax') {
+                resultInfo.innerHTML = 'Общ данък за всички месеци: ' + totalTax.toFixed(2);
+            } else if (type === 'profit') {
+                resultInfo.innerHTML = 'Обща печалба за всички месеци: ' + totalProfit.toFixed(2);
+            }
+        } else {
+            alert('Моля, въведете валидни числови стойности за месец ' + i);
+            return;
+        }
+    }
+
+    // Показваме или скриваме резултатното поле според нуждите
+    resultContainer.style.display = totalTax > 0 || totalProfit > 0 ? 'block' : 'none';
+}
+
+
+        function fadeCalculator() {
+            var calculator = document.getElementById('calculator');
+            calculator.style.opacity = '1'; // Промяна на стойността на прозрачност
+        }
+    </script>
+
+</body>
+</html>
