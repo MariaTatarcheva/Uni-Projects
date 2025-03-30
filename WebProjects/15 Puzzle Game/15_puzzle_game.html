@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zadanie 9</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #faf3f5;
+      border: 5px dotted #ee9bbb;
+      border-radius: 105px;
+      position: absolute;
+      padding: 60px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 5px;
+    }
+
+    .tile {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background-color: #ffffff;
+  border: 1px solid lightgray;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: background-color 0.3s, filter 0.3s, border 0.3s;
+}
+
+.tile:hover {
+  background-color: #f0f0f0;
+  filter: brightness(98%) drop-shadow(0 0 5px #ee9bbb);
+}
+
+
+
+    #timer-container {
+      margin-top: 20px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      display: inline-block;
+      transition: border 0.3s, filter 0.3s;
+      border: 1px solid lightgray;
+    }
+
+    #timer {
+      font-size: 23px;
+      text-align: center;
+    }
+
+    #results {
+      margin-top: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div id="game-board" class="board"></div>
+    <div id="timer-container">
+      <div id="timer">Таймер: <br><span id="timer-display">00:00:00</span></div>
+    </div>
+    <div id="results"></div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const board = document.getElementById('game-board');
+        const timerDisplay = document.getElementById('timer-display');
+        const resultsContainer = document.getElementById('results');
+
+        let numbers = Array.from({ length: 15 }, (_, index) => index + 1);
+        numbers.push('');
+        numbers = numbers.sort(() => Math.random() - 0.5);
+
+        let timerInterval;
+        let totalMilliseconds = 0;
+        let attempts = 1;
+
+        for (let number of numbers) {
+          const tile = document.createElement('div');
+          tile.className = 'tile';
+          tile.innerText = number === '' ? '' : number;
+          tile.addEventListener('click', () => handleTileClick(tile));
+          board.appendChild(tile);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+
+  function handleTileClick(tile) {
+
+
+    const emptyTile = document.querySelector('.tile:empty');
+    if (isAdjacent(tile, emptyTile)) {
+
+      setTimeout(() => {
+        swapTiles(tile, emptyTile);
+        if (isPuzzleSolved()) {
+          clearInterval(timerInterval);
+          const time = formatTime(totalMilliseconds);
+          displayResult(time, attempts);
+          attempts++;
+          resetTimer();
+        }
+      }, 300);
+    }
+  }
+
+  // ...
+});
+
+
+
+        function handleTileClick(tile) {
+          if (!timerInterval) {
+            timerInterval = setInterval(updateTimer, 10);
+          }
+
+          const emptyTile = document.querySelector('.tile:empty');
+          if (isAdjacent(tile, emptyTile)) {
+            swapTiles(tile, emptyTile);
+            if (isPuzzleSolved()) {
+              clearInterval(timerInterval);
+              const time = formatTime(totalMilliseconds);
+              displayResult(time, attempts);
+              attempts++; 
+              resetTimer();
+            }
+          }
+        }
+
+        function isAdjacent(tile1, tile2) {
+          const tile1Index = Array.from(tile1.parentNode.children).indexOf(tile1);
+          const tile2Index = Array.from(tile2.parentNode.children).indexOf(tile2);
+
+          const diff = Math.abs(tile1Index - tile2Index);
+          return (diff === 1 && Math.floor(tile1Index / 4) === Math.floor(tile2Index / 4)) ||
+                (diff === 4);
+        }
+
+        function swapTiles(tile1, tile2) {
+          const tempText = tile1.innerText;
+          tile1.innerText = tile2.innerText;
+          tile2.innerText = tempText;
+        }
+
+        function isPuzzleSolved() {
+          const tiles = document.querySelectorAll('.tile');
+          for (let i = 0; i < tiles.length - 1; i++) {
+            if (parseInt(tiles[i].innerText) !== i + 1) {
+              return false;
+            }
+          }
+          return true;
+        }
+
+        function updateTimer() {
+          totalMilliseconds += 10;
+          timerDisplay.innerText = formatTime(totalMilliseconds);
+        }
+
+        function formatTime(milliseconds) {
+          const totalSeconds = Math.floor(milliseconds / 1000);
+          const minutes = Math.floor(totalSeconds / 60);
+          const remainingSeconds = totalSeconds % 60;
+          const remainingMilliseconds = milliseconds % 1000;
+          const formattedMinutes = padZero(minutes);
+          const formattedSeconds = padZero(remainingSeconds);
+          const formattedMilliseconds = padZero(remainingMilliseconds / 10);
+          return `${formattedMinutes}:${formattedSeconds}:${formattedMilliseconds}`;
+        }
+
+        function padZero(number) {
+          return number < 10 ? `0${number}` : number;
+        }
+
+        function displayResult(time, attempt) {
+          if (attempts === 1) {
+            const table = document.createElement('table');
+            const headerRow = table.insertRow(0);
+            const attemptHeader = headerRow.insertCell(0);
+            attemptHeader.innerHTML = '<b>Attempt</b>';
+            const timeHeader = headerRow.insertCell(1);
+            timeHeader.innerHTML = '<b>Time</b>';
+            const dateHeader = headerRow.insertCell(2);
+            dateHeader.innerHTML = '<b>Date</b>';
+            resultsContainer.appendChild(table);
+          }
+
+          const table = resultsContainer.querySelector('table');
+          const newRow = table.insertRow(-1);
+          const attemptCell = newRow.insertCell(0);
+          attemptCell.innerText = attempt;
+          const timeCell = newRow.insertCell(1);
+          timeCell.innerText = time;
+          const dateCell = newRow.insertCell(2);
+          dateCell.innerText = new Date().toLocaleString();
+        }
+
+        function resetTimer() {
+          totalMilliseconds = 0;
+          timerDisplay.innerText = formatTime(totalMilliseconds);
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>
