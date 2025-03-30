@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+
+<title>Virtual Horizons Company - Продукти</title>
+
+<link rel="stylesheet" href="website.css">
+
+</head>
+<body>
+
+<h1 style="top: 1%; left: 40%;">Оферти и Продукти</h1>
+
+
+<div class="gallery-container">
+    <div class="main-image">
+        <img src="https://images.ctfassets.net/evnrpfa1vdk4/6e90pzGaE1j9loR759eHug/2cd0a3de6c1345862dd2b312d19846c2/iphone_13_pink.png" alt="Снимка 1">
+    </div>
+    <div class="thumbnails">
+        <img src="https://images.ctfassets.net/evnrpfa1vdk4/6e90pzGaE1j9loR759eHug/2cd0a3de6c1345862dd2b312d19846c2/iphone_13_pink.png" alt="Снимка 1">
+        <img src="https://res.cloudinary.com/sharp-consumer-eu/image/fetch/w_3000,f_auto/https://s3.infra.brandquad.io/accounts-media/SHRP/DAM/origin/02e77962-b170-11ea-9203-1a0a8a61af59.jpg" alt="Снимка 2">
+        <img src="https://eu.soundcore.com/cdn/shop/products/DE_A3040_TD01_V2_1500x.jpg?v=1669028774" alt="Снимка 3">
+
+    </div>
+    <div class="arrows">
+        <div class="arrow-left">&lt;</div>
+        <div class="arrow-right">&gt;</div>
+    </div>
+</div>
+
+<div class="promotion-text">ПРОМОЦИЯ!</div>
+
+<h2 style="top: 28%; left: 64%; font-weight: bold; color: #000000; font-size: 160%; ">APPLE iPHONE 13 - PINK - 128GB</h2>
+<p style="top: 32%; left: 64%; font-size: 140%;">
+Производител: Apple • Модел: iPhone 13 128GB<br>
+Характеристики: SIM Nano-SIM and/or eSIM<br>
+Батерия • Батерия В режим на готовност: <br>
+До 19 часа.
+</p>
+
+<h2 style="top: 46%; left: 40%;">SHARP 40FI6EA Android TV 102 cm</h2>
+<p style="top: 50%; left: 40%; font-size: 140%;">
+HD Ready Android Smart TV с<br>
+1920 x 1080 пиксела резолюция, изключителни<br>
+размери (включва стойка)<br>
+902.8 x 564.2 x 239.0 mm, монтаж според<br>
+VESA стандарт 200 x 100, съвместим<br>
+със съответните стандартни TV стойки.
+</p>
+
+<h2 style="top: 67%; left: 64%;">Soundcore - Wireless Over-Ear Bluetooth Headphones</h2>
+<p style="top: 72%; left: 64%;  font-size: 140%;"> 
+За да гарантираме абсолютната концентрация<br>
+на заетите пътища, сега предлагаме перфектни<br>
+безжични слушалки за вас. Space One се<br>
+отличават с потискане на средни и високи<br>
+честоти с двойно по-силно премахване на шума<br>
+от високите* честоти. *В сравнение с<br>
+слушалките Soundcore Q30."
+</p>
+
+<menu>
+<a style="top: 12%; left: 28%;" id="Company" href="VirtualHorizons_page_one.html">За фирмата</a>
+<a style="top: 12%; left: 38%;" id="Products" href="VirtualHorizons_Products.html">Продукти</a>
+<a style="top: 12%; left: 48%;" id="Orders" href="VirtualHorizons_Orders.html">Поръчки</a>
+<a style="top: 12%; left: 58%;" id="Opinions" href="VirtualHorizons_Opinions.html">Мнения</a>
+<a style="top: 12%; left: 68%;" id="Work" href="VirtualHorizons_Work_pageOne.html">Работа</a>
+</menu>
+
+<script>
+
+const mainImage = document.querySelector('.main-image img');
+const thumbnails = document.querySelectorAll('.thumbnails img');
+const arrowLeft = document.querySelector('.arrow-left');
+const arrowRight = document.querySelector('.arrow-right');
+
+let currentIndex = 0;
+
+
+arrowLeft.addEventListener('click', function() {
+    currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+    updateMainImage();
+    togglePromotionText();
+});
+
+arrowRight.addEventListener('click', function() {
+    currentIndex = (currentIndex + 1) % thumbnails.length;
+    updateMainImage();
+    togglePromotionText();
+});
+
+function updateMainImage() {
+    const imagePath = thumbnails[currentIndex].getAttribute('src');
+    mainImage.setAttribute('src', imagePath);
+}
+
+function togglePromotionText() {
+    const promotionText = document.querySelector('.promotion-text');
+    if (currentIndex === 1) {
+        promotionText.style.display = 'block';
+    } else {
+        promotionText.style.display = 'none';
+    }
+}
+
+</script>
+
+</body>
+</html>

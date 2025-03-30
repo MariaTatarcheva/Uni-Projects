@@ -1,0 +1,95 @@
+<!doctype html>
+
+<head>
+
+<link rel="stylesheet" href="website.css">
+
+</head>
+
+<body>
+<section>
+<h2 style="position:absolute; top: 24%; left: 53.3%; font-size:30px; color:#b5375b; font-style: italic;">Филм</h2>
+</section>
+<header>
+<h1 id="LinkId">Virtual Horizons Company</h1>
+</header>
+<div style="width: 1900px; height: 140px; " id="dividerOne"></div>
+<div style="width: 330px; height: 900px; " id="dividerTwo"></div>
+
+
+
+<nav>
+
+<menu>
+<a style="top: 17%; left: 34%;" id="Company" href="VirtualHorizons_page_one.html">За фирмата</a>
+<a style="top: 17%; left: 44%;" id="Products" href="VirtualHorizons_Products.html">Продукти</a>
+<a style="top: 17%; left: 54%;" id="Orders" href="VirtualHorizons_Orders.html">Поръчки</a>
+<a style="top: 17%; left: 64%;" id="Opinions" href="VirtualHorizons_Opinions.html">Мнения</a>
+<a style="top: 17%; left: 74%;" id="Work" href="VirtualHorizons_Work_pageOne.html">Работа</a>
+</menu>
+
+</nav>
+
+<svg width="150px" height="150px" style="position: absolute; top: 1%; left: 4.5%; z-index:1;">
+  <text x="44" y="118" font-family="Vivaldi" font-size="66" font-weight="bold" fill="black">C</text>
+  <text x="48" y="83" font-family="Forte" font-size="66" font-weight="bold" fill="#EFAF96" stroke="white" stroke-width="2" >H</text>
+  <text x="23" y="55" font-family="Vivaldi" font-size="66" font-weight="bold" fill="black">V</text>
+ 
+</svg>
+<aside>
+<ul>
+    <div style="position: absolute; top: 25%; left: 3.5%; font-size: 22px;">
+        <label style="color:white; font-style:italic; font-weight:900;" for="dropdown">Меню:</label>
+        <select id="dropdown" style="border:double; border-color: mediumpurple;" onchange="redirectToSelectedPage()">
+            <option value=""></option>
+            <option value="partners_page.html">Партньори</option>
+            <option value="development_page.html">Развитие</option>
+            <optgroup style="color:mediumpurple;" label="За собственика:">
+                <option style="color:black;" value="film_page.html">Филм</option>
+                <option style="color:black;" value="music_page.html">Музика</option>
+            </optgroup>
+        </select>
+    </div>
+
+</ul>
+</aside>
+<article>
+<video style="position: absolute; top: 30%; left: 30%; " id="Video" width="320" height="240" controls>
+   <source src="https://www.youtube.com/watch?v=hXzcyx9V0xw" type="video/mp4">
+</video>
+
+<div style="position: absolute; top: 25%; left: 30%; ">
+<button onclick="changeVideoSize('+')">Увеличи</button>
+<button onclick="changeVideoSize('-')">Намали</button>
+</div>
+
+<script>
+function changeVideoSize(action) {
+    var video = document.getElementById('Video');
+    var currentWidth = video.clientWidth;
+    var currentheight = video.clientHeight;
+
+    if (action === '+') {
+        video.style.width = (currentWidth * 1.2) + 'px'; // 20%
+        video.style.height = (currentheight * 1.2) + 'px'; 
+    } else if (action === '-') {
+        video.style.width = (currentWidth / 1.2) + 'px'; 
+        video.style.height = (currentheight / 1.2) + 'px'; 
+    }
+    }
+
+    function redirectToSelectedPage() {
+        var dropdown = document.getElementById('dropdown');
+        var selectedValue = dropdown.value;
+        if (selectedValue) {
+            window.location.href = selectedValue;
+        }
+    }
+
+</script>
+</article>
+
+
+</body>
+
+</html>
