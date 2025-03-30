@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+ <head>
+
+   <title>First way</title>
+   <!-- Деактивиране след d&d -->
+   
+    <style>
+	
+	
+        .allSquares {
+            position: absolute;
+            width: 50px; height: 50px;
+        }
+		
+
+        #redSquare {
+            background: red; z-index: 1;
+        }
+
+        #greenSquare {
+            background: green; z-index: 1;
+        }
+
+        #blueSquare {
+            background: blue; z-index: 1;
+        }
+		
+		
+
+        #UpLeft, #DownLeft, #UpRight, #DownRight, #Right, #Left, #Up, #Down, #Center {
+            position: absolute;
+            width: 2%; height: 4%;
+			z-index: 20;
+        }
+
+        #UpLeft { top: 3%; left: 86%; }
+        #DownLeft { top: 15%; left: 86%; }
+        #UpRight { top: 3%; left: 92%; }
+        #DownRight { top: 15%; left: 92%; }
+        #Right { top: 9%; left: 92%; }
+        #Left { top: 9%; left: 86%; }
+        #Up { top: 3%; left: 89%; }
+        #Down { top: 15%; left: 89%; }
+        #Center { top: 9%; left: 89%; }
+
+        #pixelsInput {
+            position: absolute;
+            width: 7%; height: 2%;
+            top: 20%; left: 86.3%;
+            font-size: 16px;
+			z-index: 20;
+        }
+
+        #coordinates {
+            position: absolute;
+            top: 22%; left: 85.9%;
+            font-size: 18px;
+			z-index: 20;
+        }
+		
+		#commandPanel {
+		position: absolute;
+		background: white;
+		top: 0%; left: 84.5%;
+		width: 190px; height: 230px;
+		border: 2px solid gray;
+		padding: 10px;
+		z-index: 19;
+		} 
+		
+	</style>
+ </head>
+
+ <body>
+   
+   
+   
+    <button id="UpLeft">&#8598;</button>
+    <button id="DownLeft">&#8601;</button>
+    <button id="Left">&#8592;</button>
+    <button id="UpRight">&#8599;</button>
+    <button id="DownRight">&#8600;</button>
+    <button id="Right">&#8594;</button>
+    <button id="Up">&#8593;</button>
+    <button id="Down">&#8595;</button>
+    <button id="Center">&#9711;</button>
+    <input type="number" id="pixelsInput" placeholder="Брой пиксели">
+   
+    <div id="redSquare" class="allSquares" style="top:1%; left:1%;"></div>
+	<div id="blueSquare" class="allSquares" style="top:1%; left:5%;"></div>
+	<div id="greenSquare" class="allSquares" style="top:1%; left:9%;"></div>
+
+   <div id="commandPanel"></div>
+    <p id="coordinates"></p>
+   
+   
+  <script>
+  
+  
+ var allSquares = document.querySelectorAll('.allSquares');
+ var offsetX, offsetY, isDragging = false;
+ 
+ 
+  var redSquare = document.getElementById("redSquare");
+  var blueSquare = document.getElementById("blueSquare");
+  var greenSquare = document.getElementById("greenSquare");
+  let pixels = 200;
+  let activeSquare = null;
+ 
+    document.addEventListener("click", clickCheck);
+    document.addEventListener("keydown", keyboardCheck);	
+
+
+    
+   function keyboardCheck(e) {
+   
+    redSquare.style.transition = "none";
+    blueSquare.style.transition = "none";
+    greenSquare.style.transition = "none";
+  
+	switch(e.key){
+		case 'r':
+		case 'R':
+	   {
+	   activeSquare = 'redSquare';
+	   redSquare.style.border = '3px solid black';
+       blueSquare.style.border = 'none';
+       greenSquare.style.border = 'none';
+	   break;
+	   }
+		case 'b':
+		case 'B': 
+	   {
+	   activeSquare = 'blueSquare';
+	   blueSquare.style.border = '3px solid black';
+       redSquare.style.border = 'none';
+       greenSquare.style.border = 'none';
+	   break;
+	   }
+		case 'g':
+		case 'G':
+		{
+	   activeSquare = 'greenSquare';
+	   greenSquare.style.border = '3px solid black';
+       redSquare.style.border = 'none';
+       blueSquare.style.border = 'none';
+	   break;
+	   }
+		case 'C':
+		case 'c':{
+		
+        if (activeSquare === 'redSquare') {
+        redSquare.style.borderRadius = "50%";
+        } else if (activeSquare === 'blueSquare') {
+        blueSquare.style.borderRadius = "50%";
+        } else if (activeSquare === 'greenSquare') {
+        greenSquare.style.borderRadius = "50%";
+        }
+        break;
+		
+		}
+		case 's':
+		case 'S':{
+		
+        if (activeSquare === 'redSquare') {
+        redSquare.style.borderRadius = "0";
+        } else if (activeSquare === 'blueSquare') {
+        blueSquare.style.borderRadius = "0";
+        } else if (activeSquare === 'greenSquare') {
+        greenSquare.style.borderRadius = "0";
+        }
+        break;
+		}
+	    case 'h':
+		case 'H':{
+		
+		redSquare.style.transition = "left .4s , top .4s";
+		blueSquare.style.transition = "left .4s , top .4s";
+		greenSquare.style.transition = "left .4s , top .4s";
+		
+        redSquare.style.top = '1%';
+		redSquare.style.left = '1%';
+		
+		blueSquare.style.top = '1%';
+		blueSquare.style.left = '5%';
+		
+		greenSquare.style.top = '1%';
+		greenSquare.style.left = '9%';	
+		
+        break;
+		
+		}case 'ArrowUp':
+		{
+		
+        if (activeSquare === 'redSquare') {
+            const currentTop = parseInt(redSquare.style.top, 10);
+            redSquare.style.top = (currentTop - 50) + "px";
+        } else if (activeSquare === 'blueSquare') {
+            const currentTop = parseInt(blueSquare.style.top, 10);
+            blueSquare.style.top = (currentTop - 50) + "px";
+        } else if (activeSquare === 'greenSquare') {
+            const currentTop = parseInt(greenSquare.style.top, 10);
+            greenSquare.style.top = (currentTop - 50) + "px";
+        }
+        break;
+		}
+		case 'ArrowDown':
+		{
+		
+        if (activeSquare === 'redSquare') {
+            const currentTop = parseInt(redSquare.style.top, 10);
+            redSquare.style.top = (currentTop + 50) + "px";
+        } else if (activeSquare === 'blueSquare') {
+            const currentTop = parseInt(blueSquare.style.top, 10);
+            blueSquare.style.top = (currentTop + 50) + "px";
+        } else if (activeSquare === 'greenSquare') {
+            const currentTop = parseInt(greenSquare.style.top, 10);
+            greenSquare.style.top = (currentTop + 50) + "px";
+        }
+        break;
+		}
+		case 'ArrowLeft':
+		{
+		
+        if (activeSquare === 'redSquare') {
+            const currentLeft = parseInt(redSquare.style.left, 10);
+            redSquare.style.left = (currentLeft - 50) + "px";
+        } else if (activeSquare === 'blueSquare') {
+            const currentLeft = parseInt(blueSquare.style.left, 10);
+            blueSquare.style.left = (currentLeft - 50) + "px";
+        } else if (activeSquare === 'greenSquare') {
+            const currentLeft = parseInt(greenSquare.style.left, 10);
+            greenSquare.style.left = (currentLeft - 50) + "px";
+        }
+        break;
+		}
+		case 'ArrowRight':
+		{
+		
+        if (activeSquare === 'redSquare') {
+            const currentLeft = parseInt(redSquare.style.left, 10);
+            redSquare.style.left = (currentLeft + 50) + "px";
+        } else if (activeSquare === 'blueSquare') {
+            const currentLeft = parseInt(blueSquare.style.left, 10);
+            blueSquare.style.left = (currentLeft + 50) + "px";
+        } else if (activeSquare === 'greenSquare') {
+            const currentLeft = parseInt(greenSquare.style.left, 10);
+            greenSquare.style.left = (currentLeft + 50) + "px";
+        }
+        break;
+		}
+
+	   default:break;
+	  
+	}
+}
+
+
+ function clickCheck(event) {
+	
+	
+	if (
+        event.target.id === 'UpLeft' ||
+        event.target.id === 'DownLeft' ||
+        event.target.id === 'Left' ||
+        event.target.id === 'UpRight' ||
+        event.target.id === 'DownRight' ||
+        event.target.id === 'Right' ||
+        event.target.id === 'Up' ||
+        event.target.id === 'Down' ||
+        event.target.id === 'Center' ||
+        event.target.id === 'pixelsInput' 
+    ) {
+     
+		
+		const direction = event.target.id;
+		
+        moveSquare(direction);
+    } else {
+        
+		redSquare.style.transition = "left .4s , top .4s";
+		blueSquare.style.transition = "left .4s , top .4s";
+		greenSquare.style.transition = "left .4s , top .4s";
+	
+		if(activeSquare == 'redSquare'){
+	
+		redSquare.style.border = '3px solid black';
+        blueSquare.style.border = 'none';
+        greenSquare.style.border = 'none';
+		
+		redSquare.style.left = event.pageX - 25 + "px";
+		redSquare.style.top = event.pageY - 25 + "px";
+		
+		}else if(activeSquare == 'blueSquare'){
+		
+		blueSquare.style.border = '3px solid black';
+        redSquare.style.border = 'none';
+        greenSquare.style.border = 'none';
+		
+		blueSquare.style.left = event.pageX - 25 + "px";
+		blueSquare.style.top = event.pageY - 25 + "px";
+		
+		}else if(activeSquare == 'greenSquare'){
+		
+		greenSquare.style.border = '3px solid black';
+        blueSquare.style.border = 'none';
+        redSquare.style.border = 'none';
+		
+		greenSquare.style.left = event.pageX - 25 + "px";
+		greenSquare.style.top = event.pageY - 25 + "px";
+		
+		}
+		
+    }
+	
+	
+	
+	
+	allSquares.forEach(function (element) {
+	
+            element.addEventListener('mousedown', function (event) {
+			
+			redSquare.style.transition = "none";
+			blueSquare.style.transition = "none";
+			greenSquare.style.transition = "none";
+			
+                isDragging = true;
+                offsetX = event.clientX - element.getBoundingClientRect().left;
+                offsetY = event.clientY - element.getBoundingClientRect().top;
+                activeSquare = element;
+
+                allSquares.forEach(function (el) {
+                    el.classList.remove('selected');
+                    el.style.zIndex -= 1;
+                });
+                activeSquare.style.zIndex = 2;
+                activeSquare.style.border = '3px solid black';
+            });
+        });
+
+        document.addEventListener('mousemove', function (event) {
+            if (isDragging && activeSquare) {
+                var x = event.clientX - offsetX;
+                var y = event.clientY - offsetY;
+                activeSquare.style.left = x + 'px';
+                activeSquare.style.top = y + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function () {
+		greenSquare.style.border = 'none';
+		blueSquare.style.border = 'none';
+		redSquare.style.border = 'none';
+            isDragging = false;
+        });
+	
+	
+	
+	
+		
+}
+
+
+    
+	function moveSquare(direction) {
+		
+		
+		
+		redSquare.style.transition = "left .4s , top .4s";
+		blueSquare.style.transition = "left .4s , top .4s";
+		greenSquare.style.transition = "left .4s , top .4s";
+		
+		
+		
+			
+                const square = document.getElementById(activeSquare);
+                const rect = square.getBoundingClientRect();
+                
+				
+                const coordinatesParagraph = document.getElementById('coordinates');
+				const xCoordinate = Math.round(rect.left);
+				const yCoordinate = Math.round(rect.top);
+				coordinatesParagraph.textContent = `X: ${xCoordinate}px, Y: ${yCoordinate}px`;
+				square.style.border = '3px solid black';
+
+
+                switch(direction) {
+                    case 'UpLeft':
+                        square.style.top = rect.top - pixels + 'px';
+                        square.style.left = rect.left - pixels + 'px';
+                        break;
+                    case 'DownLeft':
+                        square.style.top = rect.top + pixels + 'px';
+                        square.style.left = rect.left - pixels + 'px';
+                        break;
+                    case 'Left':
+                        square.style.left = rect.left - pixels + 'px';
+                        break;
+                    case 'UpRight':
+                        square.style.top = rect.top - pixels + 'px';
+                        square.style.left = rect.left + pixels + 'px';
+                        break;
+                    case 'DownRight':
+                        square.style.top = rect.top + pixels + 'px';
+                        square.style.left = rect.left + pixels + 'px';
+                        break;
+                    case 'Right':
+                        square.style.left = rect.left + pixels + 'px';
+                        break;
+                    case 'Up':
+                        square.style.top = rect.top - pixels + 'px';
+                        break;
+                    case 'Down':
+                        square.style.top = rect.top + pixels + 'px';
+                        break;
+                    case 'Center':
+                        square.style.top = '50%';
+                        square.style.left = '50%';
+                        break;
+                }
+            
+        }
+		
+        document.getElementById('pixelsInput').addEventListener('input', (event) => {
+            pixels = parseInt(event.target.value) || pixels;
+        });
+	
+ 
+  </script>
+
+
+ </body>
+</html>
