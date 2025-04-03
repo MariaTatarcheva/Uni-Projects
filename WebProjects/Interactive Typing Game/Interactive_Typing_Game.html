@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+  <title>Домашна работа</title>
+  <style>
+    #textInput {
+      position:absolute;
+      top: 20%; left: 33%;
+      height:40%; width: 35%;
+    }
+    #pasteInput{
+      position:absolute; 
+      top: 6%; left: 33%; 
+      height:12%; width: 35%;
+    }
+    #timerDisplay {
+      position:absolute;
+      top: 61%; left: 47.5%;
+    }
+    #clearButton {
+      position:absolute;
+      top: 68%; left: 48.8%;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    table {
+      position:absolute;
+      top: 75%; left: 42.5%;
+      border-collapse: collapse;
+    }
+    @media (max-width: 768px) {
+      table {
+        position:absolute;
+      top: 75%; left: 5%;
+      border-collapse: collapse;
+      }
+      #timerDisplay {
+      position:absolute;
+      top: 61%; left: 30%;
+    }
+    #clearButton {
+      position:absolute;
+      top: 68%; left: 39%;
+      padding: 8px 12px;
+    }
+    #textInput {
+      position:absolute;
+      top: 20%; left: 14%;
+      height:40%; width: 70%;
+    }
+    #pasteInput {
+      position:absolute; 
+      top: 6%; left: 15%; 
+      height:10%; width: 68%;
+    }
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="textInput" placeholder="Въведете Enter тук за да стартирате таймера и да можете да въвеждате и натиснете Enter за да спре таймера." readonly style="resize: none;" onpaste="return false;" ondrop="return false;"></textarea>
+  <textarea id="pasteInput" placeholder="Въведете/Поставете текст тук." style="resize: none; "></textarea>
+  <p id="timerDisplay">Таймер: 0 сек. 0 мс.</p>
+  <button id="clearButton" disabled>Изчисти</button>
+  <table id="attemptsTable">
+    <tr>
+      <th>Опити</th>
+      <th>Време (сек., мс.)</th>
+      <th>Резултат</th>
+      <th>Вид</th>
+    </tr>
+  </table>
+
+<script>
+  let startTime;
+  let timerInterval;
+  let attemptsCount = 0;
+
+  document.getElementById('textInput').addEventListener('keydown', startTimer);
+  document.getElementById('clearButton').addEventListener('click', clearText);
+
+  function startTimer(event) {
+  if (event.key === 'Enter') {
+    if (startTime) {
+      clearInterval(timerInterval);
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+      startTime = null;
+      const inputText = document.getElementById('textInput').value;
+      const pasteText = document.getElementById('pasteInput').value;
+      
+      let isCorrect;
+      if(pasteText === ''){
+        isCorrect = checkAlphabet(inputText);
+      } else {
+        isCorrect = checkPasteText(inputText, pasteText);
+      }
+      addAttempt(isCorrect, elapsedTime);
+    } else {
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1);
+      
+      document.getElementById('textInput').value = '';
+    }
+    document.getElementById('textInput').readOnly = !document.getElementById('textInput').readOnly;
+    event.preventDefault(); 
+    document.getElementById('clearButton').disabled = false;
+  }
+}
+
+function checkPasteText(inputText, pasteText) {
+  const pasteWithoutExtraSpaces = pasteText.replace(/\s+/g, ' ');
+  const trimmedPaste = pasteWithoutExtraSpaces.trim();
+  return trimmedPaste === inputText;
+}
+
+
+  function checkAlphabet(inputText) {
+    const englishAlphabet = 'abcdefghijklmnopqrstuvwxyz';
+    const bulgarianAlphabet = 'абвгдежзийклмнопрстуфхцчшщъьюя';
+    
+    const normalizedInput = inputText.toLowerCase().replace(/[^a-zа-я]/g, '');
+    
+    if (/^[a-z]+$/i.test(normalizedInput)) {
+      return normalizedInput === englishAlphabet;
+    }
+    
+    if (/^[а-я]+$/i.test(normalizedInput)) {
+      return normalizedInput === bulgarianAlphabet;
+    }
+    
+    return false;
+  }
+
+  function clearText() {
+    clearInterval(timerInterval);
+    startTime = null;
+    document.getElementById('timerDisplay').innerText = 'Таймер: 0 сек. 0 мс.';
+    document.getElementById('textInput').readOnly = true;
+    document.getElementById('clearButton').disabled = true;
+    document.getElementById('textInput').value = '';
+  }
+
+  let currentElapsedTime = 0;
+
+function updateTimer() {
+  const currentTime = Date.now();
+  const elapsedTime = currentTime - startTime;
+  currentElapsedTime = elapsedTime;
+
+  const minutes = Math.floor(elapsedTime / 60000);
+  const seconds = Math.floor((elapsedTime % 60000) / 1000);
+  const milliseconds = elapsedTime % 1000;
+
+  let timerDisplayText = 'Таймер:';
+
+  if (minutes > 0) {
+    timerDisplayText += ` ${minutes} мин.`;
+  }
+
+  timerDisplayText += ` ${seconds} сек. ${milliseconds} мс.`;
+
+  document.getElementById('timerDisplay').innerText = timerDisplayText;
+}
+
+
+
+function addAttempt(isCorrect, elapsedTime) {
+  attemptsCount++;
+  const attemptsTable = document.getElementById('attemptsTable');
+  const row = attemptsTable.insertRow(-1);
+  const attemptCell = row.insertCell(0);
+  const timeCell = row.insertCell(1);
+  const resultCell = row.insertCell(2);
+  const typeCell = row.insertCell(3);
+
+  attemptCell.textContent = `Опит ${attemptsCount}`;
+  timeCell.textContent = formatElapsedTimeWithMinutes(currentElapsedTime);
+  resultCell.textContent = isCorrect ? '✔️' : '❌';
+
+  const inputText = document.getElementById('textInput').value;
+
+  if (isCorrect) {
+
+    const formattedTime = formatElapsedTimeWithMinutes(currentElapsedTime);
+    const inputText = document.getElementById('textInput').value;
+
+    if (checkAlphabet(inputText)) {
+
+        if(inputText[0] === "a" && inputText[1] === "b" && inputText[2] === "c"){
+          document.getElementById('textInput').value +=
+        `\n\nУспешно въведохте английската азбука за ${formattedTime}`;
+        typeCell.textContent = 'En';
+        }else{
+          document.getElementById('textInput').value +=
+        `\n\nУспешно въведохте българската азбука за ${formattedTime}`;
+        typeCell.textContent = 'Bg'; 
+        }
+
+    } else {
+      document.getElementById('textInput').value +=
+        `\n\nУспешно въведохте свободен текст за ${formattedTime}`;
+        typeCell.textContent = 'Fr';
+    }
+  }else{
+    const formattedTime = formatElapsedTimeWithMinutes(currentElapsedTime);
+    const inputText = document.getElementById('textInput').value;
+    document.getElementById('textInput').value +=
+        `\n\nНаправихте неуспешен опит за ${formattedTime}`;
+        typeCell.textContent = 'N/A';
+  }
+}
+
+
+
+function formatElapsedTimeWithMinutes(elapsedTime) {
+  const minutes = Math.floor(elapsedTime / 60000);
+  const seconds = Math.floor((elapsedTime % 60000) / 1000);
+  const milliseconds = elapsedTime % 1000;
+
+  if (minutes > 0) {
+    return `${minutes} мин. ${seconds} сек. ${milliseconds} мс.`;
+  } else {
+    return `${seconds} сек. ${milliseconds} мс.`;
+  }
+}
+
+
+const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+if (isMobileDevice) {
+  document.getElementById('textInput').addEventListener('click', simulateEnterKey);
+}
+
+function simulateEnterKey() {
+  const enterEvent = new KeyboardEvent('keydown', {
+    key: 'Enter',
+    code: 'Enter',
+    which: 13,
+    keyCode: 13,
+    bubbles: true,
+  });
+  this.dispatchEvent(enterEvent);
+}
+
+
+  
+</script>
+
+</body>
+</html>
