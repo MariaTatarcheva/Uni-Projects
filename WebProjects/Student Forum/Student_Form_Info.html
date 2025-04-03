@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Student Form Info</title>
+
+    <style>
+    .All{
+        font-size: 25px;
+        position:absolute;
+    }
+    </style>
+
+</head>
+
+<script defer>
+
+    let students = [];
+
+    function save() {
+        let student = {
+            "facultyNumber": document.saveForm.facultyNumber.value,
+            "name": document.saveForm.name.value,
+            "email": document.saveForm.email.value,
+            "phoneNumber": document.saveForm.phoneNumber.value
+        };
+        students.push(student);
+
+        return false;
+    }
+
+    function displayStudents() {
+
+        let sortOption = document.getElementById("sortOption").value;
+        
+        if (sortOption === "facultyNumber") {
+            students.sort(function(a, b) {
+                return a.facultyNumber.localeCompare(b.facultyNumber);
+            });
+        } else if (sortOption === "name") {
+            students.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            });
+        }
+
+        let outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "<h2>Запазени студенти:<h2>";
+        for (let i = 0; i < students.length; i++) {
+            outputDiv.innerHTML += `<p>Факултетен номер: ${students[i].facultyNumber}<br>Име: ${students[i].name}<br>Имейл: ${students[i].email}<br>Телефонен номер: ${students[i].phoneNumber}</p>`;
+        }
+    }
+
+    function validateForm() {
+        let facultyNumber = document.saveForm.facultyNumber.value;
+        let name = document.saveForm.name.value;
+        let email = document.saveForm.email.value;
+
+        if (!facultyNumber || !name || !email) {
+            return false;
+        }
+
+        return save();
+    }
+
+</script>
+
+<body>
+    
+
+    <form name="saveForm" onsubmit="return validateForm();">
+        <label style="top:21%; left:4%;" class="All" for="facultyNumber">Факултетен номер:</label>
+        <input style="top:25%; left:4%;" class="All" type="text" pattern="[0-9]+" name="facultyNumber" required><br>
+
+        <label style="top:11%; left:4%;" class="All" for="name">Име:</label>
+        <input style="top:15%; left:4%;"  class="All" type="text" pattern="[A-Za-zА-Яа-я ]+" name="name" required><br>
+
+        <label style="top:31%; left:4%;" class="All" for="email">Имейл:</label>
+        <input style="top:35%; left:4%;" class="All" type="email" name="email" required><br>
+
+        <label style="top:41%; left:4%;" class="All" for="phoneNumber">Телефонен номер:</label>
+        <input style="top:45%; left:4%;" class="All" type="text" pattern="[0-9]{10}" name="phoneNumber"><br>
+
+        <input style="position:absolute; top:52.3%; left:9.9%; padding: 10px; font-size: 15px; font-weight: bold;" type="submit" value="ЗАПИШИ">
+
+    </form>
+
+    <label style="position:absolute; font-size: 24px; top: 60.5%; left: 3.3%;" for="sortOption">Сортирай по: </label>
+    <select style="position:absolute; font-size: 22px; top: 60.5%; left: 10.7%;" id="sortOption">
+        <option value="facultyNumber">Факултетен номер</option>
+        <option value="name">Име</option>
+    </select>
+
+    <button style="position:absolute; font-size: 20px; top: 67.4%; left: 7.3%; padding: 7px;" onclick="displayStudents()">Изведи студентите</button>
+
+    <div style="position: absolute; top:10%; left:30%; font-size: 18px;" id="output"></div>
+    <div style="background-color:rgb(218, 246, 247); width: 20%; height: 65%; position: absolute; top: 10%; left: 2.5%; z-index: -1; border: rgb(62, 160, 152) dashed 3px;"></div>
+
+    <h1 style="position:absolute; top: 1.5%; left: 5.6%; font-weight: 200; color:rgb(76, 85, 96);">Студентски форум</h1>
+
+</body>
+
+</html>
